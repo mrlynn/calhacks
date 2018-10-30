@@ -5,7 +5,7 @@
         <input type="text" v-model="input.lastname" placeholder="Last Name" />
         <input type="hidden" v-model="input.ip"/>
 
-        <button>Send</button>
+        <button v-on:click="sendData()">Send</button>
         <br />
         <br />
         <textarea v-model="response"></textarea>
@@ -42,7 +42,7 @@ export default {
       axios({
         method: "POST",
         url:
-          "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/signin-alsim/service/signup/incoming_webhook/signup",
+          "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/calhacks-ssiva/service/calhacks/incoming_webhook/webhook",
         data: this.input,
         headers: { "content-type": "application/json" }
       }).then(
