@@ -1,15 +1,43 @@
-#!/bin/sh
-if [ -z $1 ]; then
-    echo "No args"
-else
-    CLUSTER=$1
-fi
-if [ -z ${CLUSTER} ]; then 
-   echo Enter the name of your Atlas cluster: \c
-   read cluster
-else
-   echo "Using ${CLUSTER} as MongoDB Atlas target cluster for import.\n"
-fi
+HOST=''
+DATABASE=''
+COLLECTION=''
+USER=''
+PASSWORD=''
+FILE=''
+verbose='false'
 
-#mongoimport --host Cluster0-shard-0/cluster0-shard-00-00-w19nh.mongodb.net:27017,cluster0-shard-00-01-w19nh.mongodb.net:27017,cluster0-shard-00-02-w19nh.mongodb.net:27017 --ssl --username admin --password Password123 --authenticationDatabase admin --db calhacks --collection contacts --type csv --file contacts.csv --headerline
-#mongoimport --host  --ssl --username admin --password Password123 --authenticationDatabase admin --db calhacks --collection contacts --type csv --file contacts.csv --headerline
+print_usage() {
+  printf "This script was created to automate the import process for mongoimport. Please specify the following values on the command line using the arguments -h -d -u -f -p\n"
+  printf "Usage:\n"
+  printf "  -d <database>\n"
+  printf "  -c <collection\n"
+  printf "  -u <user>\n"
+  printf "  -p <password>\n"
+}
+
+while getopts 'u:p:h:d:c:f:v' flag; do
+  case "${flag}" in
+    h) HOST=${OPTARG} ;;
+    d) DATABASE=${OPTARG} ;;
+    c) COLLECTION="${OPTARG}" ;;
+    u) USER="${OPTARG}" ;;
+    f) FILE="${OPTARG}" ;;
+    p) PASSWORD="${OPTARG}" ;;
+    v) VERBOSE='true' ;;
+    *) print_usage
+       exit 1 ;;
+   esac
+done
+if [ -z $USER -o -z $DATABASE ]; then
+   print_usage
+   exit 1;
+fi
+   echo "DATABASE: ${DATABASE}"
+   echo "COLLECTION: ${COLLECTION}"
+   echo "USER: ${USER}"
+   echo "PASSWORD: ${PASSWORD}"
+   echo "FILE: ${FILE}"
+   echo
+
+echo mongoimport --host ${CLUSTER} --ssl --username ${USER} --password ${PASSWORD} --authenticationDatabase admin --db ${DATABASE} --collection ${COLLECTION} --type csv --file ${FILE} --headerline
+mongoimport --host ${CLUSTER} --ssl --username ${USER} --password ${PASSWORD} --authenticationDatabase admin --db ${DATABASE} --collection ${COLLECTION} --type csv --file ${FILE} --headerline
